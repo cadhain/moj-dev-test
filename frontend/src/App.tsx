@@ -1,10 +1,11 @@
+import TaskList from "./components/TaskList"
+
 function App() {
 
   return (
-    <>
-      <h1>Caseworker task app</h1>
-      <p>This is a placeholder</p>
-    </>
+<main>
+    <TaskList />
+</main>
   )
 }
 
