@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 type Task = {
   id: string;
@@ -8,6 +9,7 @@ type Task = {
   due_date: string;
 };
 
+// mock data - to be changed later
 const mockTasks: Task[] = [
   {
     id: "1",
@@ -63,6 +65,9 @@ export default function TaskList() {
           </tbody>
         </table>
       )}
+      <Link to="/tasks/new" className="govuk-button govuk-button--secondary">
+        Create new task
+      </Link>
     </div>
   );
 }
