@@ -5,11 +5,12 @@ export default function GovUKTemplate({
 }) {
   return (
     <>
+      {/* header */}
       <header className="govuk-header" data-module="govuk-header">
         <div className="govuk-header__container govuk-width-container">
           <div className="govuk-header__logo">
             <a
-              href="/"
+              href="#"
               className="govuk-header__link govuk-header__link--homepage"
             >
               <svg
@@ -42,11 +43,15 @@ export default function GovUKTemplate({
           </div>
         </div>
       </header>
+
+      {/* main content */}
       <div className="govuk-width-container">
         <main className="govuk-main-wrapper" id="main-content">
           {children}
         </main>
       </div>
+
+      {/* footer */}
       <footer className="govuk-footer">
         <div className="govuk-width-container">
           <svg
@@ -88,7 +93,7 @@ export default function GovUKTemplate({
                 />
               </svg>
               <span className="govuk-footer__licence-description">
-                All content is available under the
+                All content is available under the{" "}
                 <a
                   className="govuk-footer__link"
                   href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
