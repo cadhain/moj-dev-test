@@ -7,10 +7,13 @@ export default function GovUKTemplate({
     <>
       {/* header */}
       <header className="govuk-header" data-module="govuk-header">
-        <div className="govuk-header__container govuk-width-container">
+        <div
+          className="govuk-header__container govuk-width-container"
+          govuk-header-content-flex
+        >
           <div className="govuk-header__logo">
             <a
-              href="#"
+              href="/"
               className="govuk-header__link govuk-header__link--homepage"
             >
               <svg
@@ -43,6 +46,23 @@ export default function GovUKTemplate({
           </div>
         </div>
       </header>
+
+      {/* service navigation */}
+      <section
+        aria-label="Service information"
+        className="govuk-service-navigation"
+        data-module="govuk-service-navigation"
+      >
+        <div className="govuk-width-container">
+          <div className="govuk-service-navigation__container">
+            <span className="govuk-service-navigation__service-name">
+              <a href="/" className="govuk-service-navigation__link">
+                Caseworker tasks
+              </a>
+            </span>
+          </div>
+        </div>
+      </section>
 
       {/* main content */}
       <div className="govuk-width-container">
