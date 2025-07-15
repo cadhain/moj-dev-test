@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 type Task = {
   id: string;
   title: string;
   description?: string;
-  status: 'To do' | 'In progress' | 'Done';
+  status: "To do" | "In progress" | "Done";
   due_date: string;
 };
 
 const mockTasks: Task[] = [
   {
-    id: '1',
-    title: 'Review application forms',
-    description: 'Check submitted files against criteria',
-    status: 'To do',
-    due_date: '2025-08-01T10:00:00',
+    id: "1",
+    title: "Review application forms",
+    description: "Check submitted files against criteria",
+    status: "To do",
+    due_date: "2025-08-01T10:00:00",
   },
   {
-    id: '2',
-    title: 'Email legal team',
-    status: 'In progress',
-    due_date: '2025-08-03T12:00:00',
+    id: "2",
+    title: "Email legal team",
+    status: "In progress",
+    due_date: "2025-08-03T12:00:00",
   },
 ];
 
@@ -53,9 +53,9 @@ export default function TaskList() {
                 <td className="govuk-table__cell">{task.title}</td>
                 <td className="govuk-table__cell">{task.status}</td>
                 <td className="govuk-table__cell">
-                  {new Date(task.due_date).toLocaleString('en-GB', {
-                    dateStyle: 'short',
-                    timeStyle: 'short',
+                  {new Date(task.due_date).toLocaleString("en-GB", {
+                    dateStyle: "short",
+                    timeStyle: "short",
                   })}
                 </td>
               </tr>
