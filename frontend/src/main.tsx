@@ -1,11 +1,13 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import '../govuk.scss'
+import { StrictMode } from "react";
+import App from "./App.tsx";
+import "../govuk.scss";
+import { BrowserRouter } from "react-router-dom";
+import ReactDOM from "react-dom/client";
 
-
-createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>
+);

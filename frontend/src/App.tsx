@@ -1,17 +1,26 @@
-import GovUKTemplate from "./components/GovUKTemplate"
-import TaskList from "./components/TaskList"
+import { Route, Routes } from "react-router-dom";
+import GovUKTemplate from "./components/GovUKTemplate";
+import TaskList from "./components/TaskList";
+import NewTask from "./components/NewTask";
 
 function App() {
-
   return (
-<main>
-  <GovUKTemplate>
-    <TaskList />
-  </GovUKTemplate>
-    
-    
-</main>
-  )
+    <main>
+      <Routes>
+        <Route
+          path="*"
+          element={
+            <GovUKTemplate>
+              <Routes>
+                <Route path="/tasks" element={<TaskList />} />
+                <Route path="/tasks/new" element={<NewTask />} />
+              </Routes>
+            </GovUKTemplate>
+          }
+        />
+      </Routes>
+    </main>
+  );
 }
 
-export default App
+export default App;
