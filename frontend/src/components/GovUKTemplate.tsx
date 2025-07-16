@@ -47,7 +47,7 @@ export default function GovUKTemplate({
         </div>
       </header>
 
-      {/* service navigation */}
+      {/* service name & navigation */}
       <section
         aria-label="Service information"
         className="govuk-service-navigation"

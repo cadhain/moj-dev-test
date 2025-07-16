@@ -42,7 +42,11 @@ export default function NewTask() {
 
   return (
     <div className="govuk-width-container">
-      <a href="#" className="govuk-back-link" onClick={() => navigate("#")}>
+      <a
+        href="/tasks"
+        className="govuk-back-link"
+        onClick={() => navigate("/tasks")}
+      >
         Back
       </a>
       <main className="govuk-main-wrapper " id="main-content" role="main">
