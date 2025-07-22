@@ -5,7 +5,7 @@ const DeleteTaskPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Placeholder task title (we’ll fetch from API later)
+  // Placeholder task title
   const taskTitle = "Example task title";
 
   const handleDelete = () => {
