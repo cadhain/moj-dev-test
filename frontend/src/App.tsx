@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import GovUKTemplate from "./components/GovUKTemplate";
 import TaskList from "./components/TaskList";
 import NewTask from "./components/NewTask";
+import EditTask from "./pages/EditTask";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
               <Routes>
                 <Route path="/tasks" element={<TaskList />} />
                 <Route path="/tasks/new" element={<NewTask />} />
+                <Route path="/tasks/:id/edit" element={<EditTask />} />
               </Routes>
             </GovUKTemplate>
           }

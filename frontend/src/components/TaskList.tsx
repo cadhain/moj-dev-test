@@ -34,6 +34,10 @@ export default function TaskList() {
     setTasks(mockTasks);
   }, []);
 
+  const handleDelete = (id: string) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
   return (
     <div className="govuk-width-container">
       <h1 className="govuk-heading-l">Your tasks</h1>
@@ -59,6 +63,16 @@ export default function TaskList() {
                     dateStyle: "short",
                     timeStyle: "short",
                   })}
+                  <Link to={`/tasks/${task.id}/edit`} className="govuk-link">
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(task.id)}
+                    className="govuk-button govuk-button--warning"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
