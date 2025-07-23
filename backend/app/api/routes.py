@@ -11,6 +11,7 @@ print("Loading task routes...")
 
 router = APIRouter()
 
+
 # Dependency to get a database session
 def get_db():
     db = SessionLocal()
@@ -19,14 +20,21 @@ def get_db():
     finally:
         db.close()
 
+
 # POST route to create a new task
 @router.post("/tasks", status_code=HTTP_201_CREATED, tags=["Tasks"])
 def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
-    new_task = Task(title=task_data.title, description=task_data.description, due_date=task_data.due_date, status=task_data.status)
+    new_task = Task(
+        title=task_data.title,
+        description=task_data.description,
+        due_date=task_data.due_date,
+        status=task_data.status,
+    )
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
     return new_task
+
 
 # DELETE route
 @router.delete("/tasks/{task_id}", status_code=HTTP_204_NO_CONTENT, tags=["Tasks"])
@@ -38,6 +46,7 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     return  # 204 No Content
+
 
 # GET all tasks
 @router.get("/tasks", response_model=List[TaskOut], tags=["Tasks"])

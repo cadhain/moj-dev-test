@@ -5,6 +5,7 @@ from app.api.routes import router as task_router
 
 app = FastAPI(title="Task Manager API")
 
+
 @app.get("/")
 def read_root():
     return {"message": "Task Manager API is running. Visit /docs for Swagger UI."}
