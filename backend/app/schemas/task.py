@@ -15,6 +15,13 @@ class TaskCreate(BaseModel):
             raise ValueError("Title must not be empty")
         return value
 
+    @field_validator("due_date")
+    def validate_due_date(cls, value):
+        today = date.today()
+        if value < today:
+            raise ValueError("Due date must be today or in the future.")
+        return value
+
 
 class TaskOut(BaseModel):
     id: int
