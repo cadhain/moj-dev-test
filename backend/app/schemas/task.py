@@ -4,15 +4,18 @@ from datetime import date, datetime
 
 class TaskCreate(BaseModel):
     title: str
-    description: Optional[str] = None
+    description: Optional[str] = None # optional
+    due_date: date
+    status: str
 
 class TaskOut(BaseModel):
     id: int
     title: str
-    description: str
-    due_date: Optional[date] # makes the due date optional
+    description: Optional[str] = None # optional
+    due_date: date
     status: str
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True,
+    }

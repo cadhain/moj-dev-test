@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from app.database import Base
-from datetime import datetime
+from datetime import datetime, timezone
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -10,4 +10,4 @@ class Task(Base):
     description = Column(String, nullable=True)
     due_date = Column(DateTime, nullable=True)
     status = Column(String, nullable=False, default="todo")  # e.g. "todo", "in_progress", "done"
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
