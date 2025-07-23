@@ -2,11 +2,14 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.task import Task
-from starlette.status import HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from app.schemas.task import TaskCreate  # import Pydantic model
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from typing import List
+from app.schemas.task import TaskOut  # import Pydantic model for output
 
 router = APIRouter()
 
-# Dependency: get DB session for each request
+# Dependency to get a database session
 def get_db():
     db = SessionLocal()
     try:
@@ -14,6 +17,16 @@ def get_db():
     finally:
         db.close()
 
+# POST route to create a new task
+@router.post("/tasks", status_code=HTTP_201_CREATED)
+def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
+    new_task = Task(title=task_data.title, description=task_data.description)
+    db.add(new_task)
+    db.commit()
+    db.refresh(new_task)
+    return new_task
+
+# DELETE route
 @router.delete("/tasks/{task_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
@@ -23,3 +36,8 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     db.delete(task)
     db.commit()
     return  # 204 No Content
+
+# GET all tasks
+@router.get("/tasks", response_model=List[TaskOut])
+def get_tasks(db: Session = Depends(get_db)):
+    return db.query(Task).all()

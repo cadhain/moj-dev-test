@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Use SQLite for simplicity — this creates a local `tasks.db` file
+# creates a local `tasks.db` file
 SQLALCHEMY_DATABASE_URL = "sqlite:///./tasks.db"
 
 # Connect to the database (check_same_thread=False is required for SQLite in FastAPI)
@@ -14,3 +14,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base class for ORM models
 Base = declarative_base()
+
+# Create all tables in the database
+Base.metadata.create_all(bind=engine)
