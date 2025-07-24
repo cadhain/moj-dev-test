@@ -9,36 +9,51 @@ type Task = {
   due_date: string;
 };
 
-// mock data - to be changed later
-const mockTasks: Task[] = [
-  {
-    id: "1",
-    title: "Review application forms",
-    description: "Check submitted files against criteria",
-    status: "To do",
-    due_date: "2025-08-01T10:00:00",
-  },
-  {
-    id: "2",
-    title: "Email legal team",
-    status: "In progress",
-    due_date: "2025-08-03T12:00:00",
-  },
-];
-
 export default function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Replace with real fetch later
-    setTasks(mockTasks);
+    async function fetchTasks() {
+      try {
+        const response = await fetch("http://localhost:8000/api/tasks");
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setTasks(data);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTasks();
   }, []);
 
   return (
     <div className="govuk-width-container">
       <h1 className="govuk-heading-l">Your tasks</h1>
 
-      {tasks.length === 0 ? (
+      {loading ? (
+        <p className="govuk-body">Loading...</p>
+      ) : error ? (
+        <div
+          className="govuk-error-summary"
+          aria-labelledby="error-summary-title"
+          role="alert"
+          tabIndex={-1}
+        >
+          <h2 className="govuk-error-summary__title" id="error-summary-title">
+            There was a problem
+          </h2>
+          <div className="govuk-error-summary__body">
+            <p className="govuk-body">{error}</p>
+          </div>
+        </div>
+      ) : tasks.length === 0 ? (
         <p className="govuk-body">No tasks available.</p>
       ) : (
         <table className="govuk-table">
@@ -58,10 +73,10 @@ export default function TaskList() {
                   {new Date(task.due_date).toLocaleString("en-GB", {
                     dateStyle: "short",
                     timeStyle: "short",
-                  })}
+                  })}{" "}
                   <Link to={`/tasks/${task.id}/edit`} className="govuk-link">
                     Edit
-                  </Link>
+                  </Link>{" "}
                   <Link
                     to={`/tasks/${task.id}/delete`}
                     className="govuk-button govuk-button--warning"
@@ -74,6 +89,7 @@ export default function TaskList() {
           </tbody>
         </table>
       )}
+
       <Link to="/tasks/new" className="govuk-button govuk-button--secondary">
         Create new task
       </Link>
