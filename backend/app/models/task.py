@@ -7,9 +7,11 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    due_date = Column(DateTime, nullable=True)
+    title = Column(String, nullable=False)  # mandatory field
+    description = Column(String, nullable=True)  # optional field
+    due_date = Column(
+        DateTime(timezone=True), nullable=False
+    )  # mandatory date and time
     status = Column(
         String, nullable=False, default="todo"
     )  # e.g. "todo", "in_progress", "done"

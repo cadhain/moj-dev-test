@@ -6,7 +6,7 @@ from datetime import date, datetime
 class TaskCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=100)
     description: Optional[str] = Field(None, max_length=500)  # optional
-    due_date: date
+    due_date: datetime
     status: Literal["todo", "in_progress", "done"] = "todo"
 
     @field_validator("title")
@@ -17,8 +17,8 @@ class TaskCreate(BaseModel):
 
     @field_validator("due_date")
     def validate_due_date(cls, value):
-        today = date.today()
-        if value < today:
+        now = datetime.now(value.tzinfo) if value.tzinfo else datetime.now()
+        if value < now:
             raise ValueError("Due date must be today or in the future.")
         return value
 
@@ -27,7 +27,7 @@ class TaskOut(BaseModel):
     id: int
     title: str
     description: Optional[str] = None  # optional
-    due_date: date
+    due_date: datetime
     status: str
     created_at: datetime
 
