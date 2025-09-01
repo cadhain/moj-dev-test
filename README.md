@@ -35,3 +35,14 @@ A lightweight task management API built with [FastAPI](https://fastapi.tiangolo.
    git clone https://github.com/cadhain/task-manager.git
    cd task-manager
    ```
+
+## Dev Startup
+
+1. **Frontend**
+
+   - npm run dev
+
+2. **Backend**
+
+   - source venv/bin/activate
+   - uvicorn backend.main:app --reload
