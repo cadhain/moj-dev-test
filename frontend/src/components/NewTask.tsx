@@ -1,26 +1,35 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type Status = "To do" | "In progress" | "Done";
+type Status = "todo" | "in_progress" | "done";
+
+const statusOptions: { label: string; value: Status }[] = [
+  { label: "To do", value: "todo" },
+  { label: "In progress", value: "in_progress" },
+  { label: "Done", value: "done" },
+];
 
 export default function NewTask() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<Status>("To do");
+  const [status, setStatus] = useState<Status>("todo");
   const [dueDay, setDueDay] = useState("");
   const [dueMonth, setDueMonth] = useState("");
   const [dueYear, setDueYear] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
       return setError("Task title is required");
     }
 
-    const dueDateString = `${dueYear}-${dueMonth}-${dueDay}`;
+    const dueDateString = `${dueYear}-${dueMonth.padStart(
+      2,
+      "0"
+    )}-${dueDay.padStart(2, "0")}T00:00:00`;
     const dueDate = new Date(dueDateString);
     const now = new Date();
 
@@ -28,16 +37,41 @@ export default function NewTask() {
       return setError("Please enter a valid future due date");
     }
 
-    // Mock submit - later replace with POST to backend
-    console.log({
-      title,
-      description,
-      status,
-      due_date: dueDate.toISOString(),
-    });
+    try {
+      const response = await fetch("http://localhost:8000/api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          status: status,
+          due_date: dueDate.toISOString(), // ISO format for FastAPI
+        }),
+      });
 
-    // Redirect to task list
-    navigate("/tasks");
+      if (!response.ok) {
+        const data = await response.json();
+
+        // FastAPI validation errors come as an array
+        if (Array.isArray(data.detail)) {
+          const messages = data.detail.map(
+            (err: any) => `${err.loc.join(".")}: ${err.msg}`
+          );
+          setError(messages.join(" | "));
+        } else {
+          setError(data.detail || "Failed to create task");
+        }
+        return;
+      }
+
+      // Task created successfully — redirect to task list
+      navigate("/tasks");
+    } catch (err) {
+      setError("Network error: could not create task");
+      console.error(err);
+    }
   };
 
   return (
@@ -90,7 +124,7 @@ export default function NewTask() {
                 <legend className="govuk-fieldset__legend">Status</legend>
 
                 <div className="govuk-radios">
-                  {["To do", "In progress", "Done"].map((value) => (
+                  {statusOptions.map(({ label, value }) => (
                     <div className="govuk-radios__item" key={value}>
                       <input
                         type="radio"
@@ -99,13 +133,13 @@ export default function NewTask() {
                         name="status"
                         value={value}
                         checked={status === value}
-                        onChange={() => setStatus(value as Status)}
+                        onChange={() => setStatus(value)}
                       />
                       <label
                         className="govuk-label govuk-radios__label"
                         htmlFor={value}
                       >
-                        {value}
+                        {label}
                       </label>
                     </div>
                   ))}
