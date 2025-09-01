@@ -36,7 +36,7 @@ A lightweight task management API built with [FastAPI](https://fastapi.tiangolo.
    cd task-manager
    ```
 
-## Dev Startup
+## ⏯️ Dev Startup
 
 1. **Frontend**
 
