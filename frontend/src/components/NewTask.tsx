@@ -16,26 +16,39 @@ export default function NewTask() {
   const [dueDay, setDueDay] = useState("");
   const [dueMonth, setDueMonth] = useState("");
   const [dueYear, setDueYear] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const newErrors: Record<string, string> = {};
+
     if (!title.trim()) {
-      return setError("Task title is required");
+      newErrors.title = "Enter a task title";
     }
 
-    const dueDateString = `${dueYear}-${dueMonth.padStart(
-      2,
-      "0"
-    )}-${dueDay.padStart(2, "0")}T00:00:00`;
-    const dueDate = new Date(dueDateString);
-    const now = new Date();
+    if (!dueDay || !dueMonth || !dueYear) {
+      newErrors.due_date = "Enter a due date";
+    } else {
+      const dueDateString = `${dueYear}-${dueMonth.padStart(
+        2,
+        "0"
+      )}-${dueDay.padStart(2, "0")}T00:00:00`;
+      const dueDate = new Date(dueDateString);
+      const now = new Date();
 
-    if (isNaN(dueDate.getTime()) || dueDate < now) {
-      return setError("Please enter a valid future due date");
+      if (isNaN(dueDate.getTime()) || dueDate < now) {
+        newErrors.due_date = "Enter a valid future due date";
+      }
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
 
     try {
       const response = await fetch("http://localhost:8000/api/tasks", {
@@ -56,20 +69,20 @@ export default function NewTask() {
 
         // FastAPI validation errors come as an array
         if (Array.isArray(data.detail)) {
-          const messages = data.detail.map(
-            (err: any) => `${err.loc.join(".")}: ${err.msg}`
-          );
-          setError(messages.join(" | "));
-        } else {
-          setError(data.detail || "Failed to create task");
-        }
+          const backendErrors: Record<string, string> = {};
+          data.detail.forEach((err: any) => {
+            const field = err.loc[err.loc.length - 1];
+            backendErrors[field] = err.msg;
+          });
+          setErrors(backendErrors);
+        } else setErrors({ general: data.detail || "Failed to create task" });
         return;
       }
 
       // Task created successfully — redirect to task list
       navigate("/tasks");
     } catch (err) {
-      setError("Network error: could not create task");
+      setErrors(errors);
       console.error(err);
     }
   };
@@ -85,25 +98,59 @@ export default function NewTask() {
       </a>
       <main className="govuk-main-wrapper " id="main-content" role="main">
         <div className="govuk-grid-row">
+          {/* error summary */}
+          {Object.keys(errors).length > 0 && (
+            <div
+              className="govuk-error-summary"
+              role="alert"
+              aria-labelledby="error-summary-title"
+              tabIndex={-1}
+            >
+              <h2
+                className="govuk-error-summary__title"
+                id="error-summary-title"
+              >
+                There is a problem
+              </h2>
+              <ul className="govuk-list govuk-error-summary__list">
+                {Object.entries(errors).map(([field, message]) => (
+                  <li key={field}>
+                    <a href={`#${field}`}>{message}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="govuk-grid-column-two-thirds">
             <h1 className="govuk-heading-l">Create a new task</h1>
 
-            {error && <p className="govuk-error-message">{error}</p>}
-
+            {/* title field */}
             <form onSubmit={handleSubmit} className="govuk-form-group">
-              <div className="govuk-form-group">
+              <div
+                className={`govuk-form-group ${
+                  errors.title ? "govuk-form-group--error" : ""
+                }`}
+              >
                 <label className="govuk-label" htmlFor="title">
                   Task title
                 </label>
+                {errors.title && (
+                  <p id="title-error" className="govuk-error-message">
+                    <span className="govuk-visually-hidden">Error:</span>{" "}
+                    {errors.title}
+                  </p>
+                )}
                 <input
                   className="govuk-input"
                   id="title"
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  aria-describedby={errors.title ? "title-error" : undefined}
                 />
               </div>
 
+              {/* description field */}
               <div className="govuk-form-group">
                 <label className="govuk-label" htmlFor="description">
                   Description (optional)
@@ -117,6 +164,7 @@ export default function NewTask() {
                 ></textarea>
               </div>
 
+              {/* status radios */}
               <fieldset
                 className="govuk-fieldset"
                 style={{ marginBottom: "20px" }}
@@ -146,13 +194,24 @@ export default function NewTask() {
                 </div>
               </fieldset>
 
-              <div className="govuk-form-group">
+              {/* due date fieldset */}
+              <div
+                className={`govuk-form-group ${
+                  errors.due_date ? "govuk-form-group--error" : ""
+                }`}
+              >
                 <fieldset
                   className="govuk-fieldset"
                   role="group"
                   aria-describedby="due-date-hint"
                 >
                   <legend className="govuk-fieldset__legend">Due date</legend>
+                  {errors.due_date && (
+                    <p id="due-date-error" className="govuk-error-message">
+                      <span className="govuk-visually-hidden">Error:</span>{" "}
+                      {errors.due_date}
+                    </p>
+                  )}
                   <div id="due-date-hint" className="govuk-hint">
                     For example, 31 08 2025
                   </div>
