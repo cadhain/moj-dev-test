@@ -28,6 +28,7 @@ export default function NewTask() {
       newErrors.title = "Enter a task title";
     }
 
+    let dueDate: Date | null = null;
     if (!dueDay || !dueMonth || !dueYear) {
       newErrors.due_date = "Enter a due date";
     } else {
@@ -35,7 +36,7 @@ export default function NewTask() {
         2,
         "0"
       )}-${dueDay.padStart(2, "0")}T00:00:00`;
-      const dueDate = new Date(dueDateString);
+      dueDate = new Date(dueDateString);
       const now = new Date();
 
       if (isNaN(dueDate.getTime()) || dueDate < now) {
@@ -60,7 +61,7 @@ export default function NewTask() {
           title,
           description,
           status: status,
-          due_date: dueDate.toISOString(), // ISO format for FastAPI
+          due_date: dueDate!.toISOString(), // ISO format for FastAPI
         }),
       });
 
