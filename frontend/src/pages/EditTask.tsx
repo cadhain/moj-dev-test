@@ -1,19 +1,54 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 const EditTaskPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-  // Temporary hardcoded values - will be fetched from API later
-  const [title, setTitle] = useState("Example task title");
-  const [description, setDescription] = useState("Example task description");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch task data on mount
+  useEffect(() => {
+    console.log("Fetching task with ID:", id);
+    const fetchTask = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/tasks/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch task");
+        const data = await response.json();
+        setTitle(data.title);
+        setDescription(data.description);
+      } catch (err: any) {
+        setError(err.message || "Error loading task");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTask();
+  }, [id]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submit edit task:", { id, title, description });
-
-    // Later: send PUT/PATCH to API endpoint
+    try {
+      const response = await fetch(`http://localhost:8000/api/tasks/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description }),
+      });
+      if (!response.ok) throw new Error("Failed to update task");
+      navigate("/tasks");
+    } catch (err: any) {
+      setError(err.message || "Error updating task");
+    }
   };
+
+  if (loading) return <div className="govuk-width-container">Loading...</div>;
+  if (error)
+    return (
+      <div className="govuk-width-container govuk-error-message">{error}</div>
+    );
 
   return (
     <div className="govuk-width-container">

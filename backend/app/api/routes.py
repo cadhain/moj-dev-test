@@ -52,3 +52,12 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
 @router.get("/tasks", response_model=List[TaskOut], tags=["Tasks"])
 def get_tasks(db: Session = Depends(get_db)):
     return db.query(Task).all()
+
+
+# GET a single task by ID
+@router.get("/tasks/{task_id}", response_model=TaskOut, tags=["Tasks"])
+def get_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Task not found")
+    return task
