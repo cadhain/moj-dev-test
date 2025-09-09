@@ -8,9 +8,10 @@ const DeleteTaskPage: React.FC = () => {
   // Placeholder task title
   const taskTitle = "Example task title";
 
-  const handleDelete = () => {
-    // TODO: Replace with API call to delete task
-    console.log(`Deleted task with ID: ${id}`);
+  const handleDelete = async () => {
+    await fetch(`http://localhost:8000/api/tasks/${id}`, {
+      method: "DELETE",
+    });
     navigate("/tasks");
   };
 
