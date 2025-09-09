@@ -51,16 +51,13 @@ const EditTaskPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Construct date as local time to avoid timezone offset issues
-    const localDate = new Date(
-      Number(dueYear),
-      Number(dueMonth) - 1,
-      Number(dueDay),
-      Number(dueHour),
-      Number(dueMinute),
-      0
-    );
-    const dueDateISO = localDate.toISOString();
+    const dueDateISO = `${dueYear}-${dueMonth.padStart(
+      2,
+      "0"
+    )}-${dueDay.padStart(2, "0")}T${dueHour.padStart(
+      2,
+      "0"
+    )}:${dueMinute.padStart(2, "0")}:00Z`;
 
     try {
       const response = await fetch(`http://localhost:8000/api/tasks/${id}`, {
