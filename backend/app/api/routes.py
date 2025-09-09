@@ -2,10 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models.task import Task
-from app.schemas.task import TaskCreate  # import Pydantic model
+from app.schemas.task import TaskCreate, TaskOut, TaskUpdate  # import Pydantic model
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 from typing import List
-from app.schemas.task import TaskOut  # import Pydantic model for output
 
 print("Loading task routes...")
 
@@ -60,4 +59,19 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Task not found")
+    return task
+
+
+# PUT route to update a task
+@router.put("/tasks/{task_id}", response_model=TaskOut, tags=["Tasks"])
+def update_task(task_id: int, task_data: TaskUpdate, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Task not found")
+    task.title = task_data.title
+    task.description = task_data.description
+    task.due_date = task_data.due_date
+    task.status = task_data.status
+    db.commit()
+    db.refresh(task)
     return task

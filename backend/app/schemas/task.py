@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Literal
-from datetime import date, datetime
+from datetime import datetime
 
 
 class TaskCreate(BaseModel):
@@ -34,3 +34,10 @@ class TaskOut(BaseModel):
     model_config = {
         "from_attributes": True,
     }
+
+
+class TaskUpdate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    due_date: datetime
+    status: str
