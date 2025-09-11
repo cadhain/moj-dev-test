@@ -57,7 +57,7 @@ export default function GovUKTemplate({
           <div className="govuk-service-navigation__container">
             <span className="govuk-service-navigation__service-name">
               <a href="/" className="govuk-service-navigation__link">
-                Caseworker tasks
+                Task manager
               </a>
             </span>
           </div>

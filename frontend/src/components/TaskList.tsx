@@ -59,14 +59,17 @@ export default function TaskList() {
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr className="govuk-table__row">
+              <th className="govuk-table__header">Task</th>
               <th className="govuk-table__header">Title</th>
               <th className="govuk-table__header">Status</th>
               <th className="govuk-table__header">Due date</th>
+              <th className="govuk-table__header">Action</th>
             </tr>
           </thead>
           <tbody className="govuk-table__body">
             {tasks.map((task) => (
               <tr className="govuk-table__row" key={task.id}>
+                <td className="govuk-table__cell">{task.id}</td>
                 <td className="govuk-table__cell">{task.title}</td>
                 <td className="govuk-table__cell">{task.status}</td>
                 <td className="govuk-table__cell">
@@ -74,6 +77,9 @@ export default function TaskList() {
                     dateStyle: "short",
                     timeStyle: "short",
                   })}{" "}
+                </td>
+                <td className="govuk-table__cell">
+                  {" "}
                   <Link to={`/tasks/${task.id}/edit`} className="govuk-link">
                     Edit
                   </Link>{" "}
