@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import GovUKTemplate from "./components/GovUKTemplate";
-import TaskList from "./components/TaskList";
-import NewTask from "./components/NewTask";
-import EditTask from "./pages/EditTask";
+import TaskListPage from "./pages/TaskListPage";
+import NewTaskPage from "./pages/NewTaskPage";
+import EditTaskPage from "./pages/EditTaskPage";
 import DeleteTaskPage from "./pages/DeleteTaskPage";
 
 function App() {
@@ -14,9 +14,9 @@ function App() {
           element={
             <GovUKTemplate>
               <Routes>
-                <Route path="/tasks" element={<TaskList />} />
-                <Route path="/tasks/new" element={<NewTask />} />
-                <Route path="/tasks/:id/edit" element={<EditTask />} />
+                <Route path="/tasks" element={<TaskListPage />} />
+                <Route path="/tasks/new" element={<NewTaskPage />} />
+                <Route path="/tasks/:id/edit" element={<EditTaskPage />} />
                 <Route path="/tasks/:id/delete" element={<DeleteTaskPage />} />
               </Routes>
             </GovUKTemplate>
