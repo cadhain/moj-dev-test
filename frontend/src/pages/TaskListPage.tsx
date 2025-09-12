@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import TaskTable from "../components/TaskTable";
+import ErrorSummary from "../components/ErrorSummary";
 
-type Task = {
+export type Task = {
   id: string;
   title: string;
   description?: string;
-  status: "To do" | "In progress" | "Done";
+  status: string;
   due_date: string;
 };
 
-export default function TaskList() {
+export default function TaskListPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,60 +42,11 @@ export default function TaskList() {
       {loading ? (
         <p className="govuk-body">Loading...</p>
       ) : error ? (
-        <div
-          className="govuk-error-summary"
-          aria-labelledby="error-summary-title"
-          role="alert"
-          tabIndex={-1}
-        >
-          <h2 className="govuk-error-summary__title" id="error-summary-title">
-            There was a problem
-          </h2>
-          <div className="govuk-error-summary__body">
-            <p className="govuk-body">{error}</p>
-          </div>
-        </div>
+        <ErrorSummary error={error} />
       ) : tasks.length === 0 ? (
         <p className="govuk-body">No tasks available.</p>
       ) : (
-        <table className="govuk-table">
-          <thead className="govuk-table__head">
-            <tr className="govuk-table__row">
-              <th className="govuk-table__header">Task</th>
-              <th className="govuk-table__header">Title</th>
-              <th className="govuk-table__header">Status</th>
-              <th className="govuk-table__header">Due date</th>
-              <th className="govuk-table__header">Action</th>
-            </tr>
-          </thead>
-          <tbody className="govuk-table__body">
-            {tasks.map((task) => (
-              <tr className="govuk-table__row" key={task.id}>
-                <td className="govuk-table__cell">{task.id}</td>
-                <td className="govuk-table__cell">{task.title}</td>
-                <td className="govuk-table__cell">{task.status}</td>
-                <td className="govuk-table__cell">
-                  {new Date(task.due_date).toLocaleString("en-GB", {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  })}{" "}
-                </td>
-                <td className="govuk-table__cell">
-                  {" "}
-                  <Link to={`/tasks/${task.id}/edit`} className="govuk-link">
-                    Edit
-                  </Link>{" "}
-                  <Link
-                    to={`/tasks/${task.id}/delete`}
-                    className="govuk-button govuk-button--warning"
-                  >
-                    Delete
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TaskTable tasks={tasks} />
       )}
 
       <Link to="/tasks/new" className="govuk-button govuk-button--secondary">
