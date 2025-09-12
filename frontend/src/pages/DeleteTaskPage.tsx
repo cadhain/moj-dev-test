@@ -29,7 +29,7 @@ const DeleteTaskPage: React.FC = () => {
     await fetch(`http://localhost:8000/api/tasks/${id}`, {
       method: "DELETE",
     });
-    navigate("/tasks");
+    navigate("/tasks/deleted", { state: { taskTitle } });
   };
 
   if (loading) {

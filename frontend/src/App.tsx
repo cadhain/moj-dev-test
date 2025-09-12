@@ -4,6 +4,7 @@ import TaskListPage from "./pages/TaskListPage";
 import NewTaskPage from "./pages/NewTaskPage";
 import EditTaskPage from "./pages/EditTaskPage";
 import DeleteTaskPage from "./pages/DeleteTaskPage";
+import ConfirmationPage from "./pages/ConfirmationPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/tasks/new" element={<NewTaskPage />} />
                 <Route path="/tasks/:id/edit" element={<EditTaskPage />} />
                 <Route path="/tasks/:id/delete" element={<DeleteTaskPage />} />
+                <Route path="/tasks/deleted" element={<ConfirmationPage />} />
               </Routes>
             </GovUKTemplate>
           }
