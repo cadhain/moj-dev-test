@@ -39,6 +39,10 @@ export default function TaskListPage() {
     <div className="govuk-width-container">
       <h1 className="govuk-heading-l">Your tasks</h1>
 
+      <Link to="/tasks/search" className="govuk-link">
+        Search for a task by ID
+      </Link>
+
       {loading ? (
         <p className="govuk-body">Loading...</p>
       ) : error ? (
