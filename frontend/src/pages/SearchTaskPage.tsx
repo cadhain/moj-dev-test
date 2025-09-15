@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 export default function SearchTaskPage() {
   const [taskId, setTaskId] = useState("");
@@ -26,6 +27,7 @@ export default function SearchTaskPage() {
 
   return (
     <div className="govuk-width-container">
+      <Breadcrumbs />
       <main className="govuk-main-wrapper" id="main-content">
         <h1 className="govuk-heading-l">Search for a task by ID</h1>
         <form onSubmit={handleSearch}>

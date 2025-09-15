@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const statusOptions = [
   { label: "To do", value: "todo" },
@@ -85,6 +86,7 @@ const EditTaskPage: React.FC = () => {
 
   return (
     <div className="govuk-width-container">
+      <Breadcrumbs />
       <main className="govuk-main-wrapper" id="main-content">
         <h1 className="govuk-heading-l">Edit Task</h1>
         <form onSubmit={handleSubmit}>

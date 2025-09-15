@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TaskTable from "../components/TaskTable";
 import ErrorSummary from "../components/ErrorSummary";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 export type Task = {
   id: string;
@@ -37,6 +38,7 @@ export default function TaskListPage() {
 
   return (
     <div className="govuk-width-container">
+      <Breadcrumbs />
       <h1 className="govuk-heading-l">Your tasks</h1>
 
       <Link to="/tasks/search" className="govuk-link">
