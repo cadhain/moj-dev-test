@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const DeleteTaskPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +55,7 @@ const DeleteTaskPage: React.FC = () => {
 
   return (
     <div className="govuk-width-container">
+      <Breadcrumbs />
       <main className="govuk-main-wrapper" id="main-content">
         <h1 className="govuk-heading-l">
           Are you sure you want to delete this task?
