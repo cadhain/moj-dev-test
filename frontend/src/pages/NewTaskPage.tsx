@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ErrorSummary from "../components/ErrorSummary";
 
 type Status = "todo" | "in_progress" | "done";
 
@@ -99,30 +100,8 @@ export default function NewTask() {
       </a>
       <main className="govuk-main-wrapper " id="main-content" role="main">
         <div className="govuk-grid-row">
-          {/* error summary */}
-          {Object.keys(errors).length > 0 && (
-            <div
-              className="govuk-error-summary"
-              role="alert"
-              aria-labelledby="error-summary-title"
-              tabIndex={-1}
-            >
-              <h2
-                className="govuk-error-summary__title"
-                id="error-summary-title"
-              >
-                There is a problem
-              </h2>
-              <ul className="govuk-list govuk-error-summary__list">
-                {Object.entries(errors).map(([field, message]) => (
-                  <li key={field}>
-                    <a href={`#${field}`}>{message}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
           <div className="govuk-grid-column-two-thirds">
+            <ErrorSummary errors={errors} />
             <h1 className="govuk-heading-l">Create a new task</h1>
 
             {/* title field */}

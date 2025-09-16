@@ -36,7 +36,7 @@ export default function SearchTaskPage() {
               Task ID
             </label>
             <input
-              className="govuk-input"
+              className="govuk-input govuk-input--width-10"
               id="taskId"
               type="number"
               value={taskId}

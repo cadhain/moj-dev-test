@@ -10,7 +10,7 @@ export default function TaskTable({ tasks }: TaskTableProps) {
     <table className="govuk-table">
       <thead className="govuk-table__head">
         <tr className="govuk-table__row">
-          <th className="govuk-table__header">Task</th>
+          <th className="govuk-table__header">ID</th>
           <th className="govuk-table__header">Title</th>
           <th className="govuk-table__header">Status</th>
           <th className="govuk-table__header">Due date</th>
