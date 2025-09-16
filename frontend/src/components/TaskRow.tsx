@@ -42,6 +42,15 @@ export default function TaskRow({ task }: TaskRowProps) {
       <td className="govuk-table__cell">{formatDate(task.due_date)}</td>
       <td className="govuk-table__cell">
         <Link
+          to={`/tasks/${task.id}/view`}
+          className="govuk-link"
+          role="button"
+          draggable="false"
+        >
+          View
+        </Link>
+        <span className="govuk-!-margin-left-3"></span>
+        <Link
           to={`/tasks/${task.id}/edit`}
           className="govuk-link"
           role="button"

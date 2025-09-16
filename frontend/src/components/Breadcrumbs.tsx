@@ -26,6 +26,11 @@ const breadcrumbMap: Record<string, { text: string; to: string }[]> = {
     { text: "Tasks", to: "/tasks" },
     { text: "Delete task", to: "#" },
   ],
+  "/tasks/:id/view": [
+    { text: "Home", to: "/" },
+    { text: "Tasks", to: "/tasks" },
+    { text: "View task", to: "/tasks/view" },
+  ],
 };
 
 export default function Breadcrumbs() {
@@ -38,6 +43,9 @@ export default function Breadcrumbs() {
   }
   if (/^\/tasks\/\d+\/delete$/.test(path)) {
     path = "/tasks/:id/delete";
+  }
+  if (/^\/tasks\/\d+\/view$/.test(path)) {
+    path = "/tasks/:id/view";
   }
 
   const crumbs = breadcrumbMap[path] || [{ text: "Home", to: "/" }];

@@ -7,6 +7,7 @@ import DeleteTaskPage from "./pages/DeleteTaskPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
 import SearchTaskPage from "./pages/SearchTaskPage";
 import StartPage from "./pages/StartPage";
+import ViewTaskPage from "./pages/ViewTaskPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               <Routes>
                 <Route path="/tasks" element={<TaskListPage />} />
                 <Route path="/tasks/new" element={<NewTaskPage />} />
+                <Route path="/tasks/:id/view" element={<ViewTaskPage />} />
                 <Route path="/tasks/:id/edit" element={<EditTaskPage />} />
                 <Route path="/tasks/:id/delete" element={<DeleteTaskPage />} />
                 <Route path="/tasks/deleted" element={<ConfirmationPage />} />

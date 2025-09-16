@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ErrorSummary from "../components/ErrorSummary";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 type Status = "todo" | "in_progress" | "done";
 
@@ -91,13 +92,7 @@ export default function NewTask() {
 
   return (
     <div className="govuk-width-container">
-      <a
-        href="/tasks"
-        className="govuk-back-link"
-        onClick={() => navigate("/tasks")}
-      >
-        Back
-      </a>
+      <Breadcrumbs />
       <main className="govuk-main-wrapper " id="main-content" role="main">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
