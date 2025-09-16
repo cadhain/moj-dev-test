@@ -8,8 +8,12 @@ type TaskRowProps = {
 function formatDate(dateString: string) {
   const date = new Date(dateString);
   return date.toLocaleString("en-GB", {
-    dateStyle: "short",
-    timeStyle: "short",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
   });
 }
 
@@ -17,9 +21,12 @@ const statusLabels: Record<string, string> = {
   todo: "To do",
   in_progress: "In progress",
   done: "Done",
-  "To do": "To do",
-  "In progress": "In progress",
-  Done: "Done",
+};
+
+const statusTagClasses: Record<string, string> = {
+  todo: "govuk-tag govuk-tag--grey",
+  in_progress: "govuk-tag govuk-tag--blue",
+  done: "govuk-tag govuk-tag--green",
 };
 
 export default function TaskRow({ task }: TaskRowProps) {
@@ -28,7 +35,9 @@ export default function TaskRow({ task }: TaskRowProps) {
       <td className="govuk-table__cell">{task.id}</td>
       <td className="govuk-table__cell">{task.title}</td>
       <td className="govuk-table__cell">
-        {statusLabels[task.status] || task.status}
+        <strong className={statusTagClasses[task.status] || "govuk-tag"}>
+          {statusLabels[task.status] || task.status}
+        </strong>
       </td>
       <td className="govuk-table__cell">{formatDate(task.due_date)}</td>
       <td className="govuk-table__cell">
