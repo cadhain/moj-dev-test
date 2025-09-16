@@ -36,7 +36,7 @@ A lightweight task management API built with [FastAPI](https://fastapi.tiangolo.
    cd task-manager
    ```
 
-## ⏯️ Dev Startup
+## ⏯️ Dev Startup / Shutdown
 
 1. **Frontend**
 
@@ -46,3 +46,8 @@ A lightweight task management API built with [FastAPI](https://fastapi.tiangolo.
 
    - source venv/bin/activate
    - uvicorn backend.main:app --reload
+
+3. **Shutdown**
+
+   - navigate to either the frontend or backend folder
+   - ctrl + c to shutdown
