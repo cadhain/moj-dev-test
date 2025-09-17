@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { formatDateTime } from "../utils/date";
 
 const statusLabels: Record<string, string> = {
   todo: "To do",
@@ -51,18 +52,7 @@ export default function ViewTaskPage() {
     );
   }
 
-  // Parse date/time for display
-  const date = new Date(task.due_date);
-  const dueDate = date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-  const dueTime = date.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const formattedDue = formatDateTime(task.due_date);
 
   return (
     <div className="govuk-width-container">
@@ -121,7 +111,7 @@ export default function ViewTaskPage() {
               id="due_date"
               name="due_date"
               type="text"
-              value={`${dueDate} at ${dueTime}`}
+              value={formattedDue}
               disabled
               readOnly
             />

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ErrorSummary from "../components/ErrorSummary";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { buildIsoDateTime } from "../utils/date";
 
 type Status = "todo" | "in_progress" | "done";
 
@@ -18,6 +19,8 @@ export default function NewTask() {
   const [dueDay, setDueDay] = useState("");
   const [dueMonth, setDueMonth] = useState("");
   const [dueYear, setDueYear] = useState("");
+  const [dueHour, setDueHour] = useState("");
+  const [dueMinute, setDueMinute] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
@@ -26,24 +29,42 @@ export default function NewTask() {
 
     const newErrors: Record<string, string> = {};
 
+    // Validate title
     if (!title.trim()) {
       newErrors.title = "Enter a task title";
     }
 
-    let dueDate: Date | null = null;
+    // Validate due date parts
     if (!dueDay || !dueMonth || !dueYear) {
       newErrors.due_date = "Enter a due date";
-    } else {
-      const dueDateString = `${dueYear}-${dueMonth.padStart(
-        2,
-        "0"
-      )}-${dueDay.padStart(2, "0")}T00:00:00`;
-      dueDate = new Date(dueDateString);
-      const now = new Date();
+    }
 
-      if (isNaN(dueDate.getTime()) || dueDate < now) {
-        newErrors.due_date = "Enter a valid future due date";
-      }
+    // Validate due time parts
+    if (!dueHour || !dueMinute) {
+      newErrors.due_time = "Enter a due time";
+    }
+
+    // If required fields missing → skip ISO build
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Build ISO datetime string
+    const isoDueDate = buildIsoDateTime(
+      dueYear,
+      dueMonth,
+      dueDay,
+      dueHour,
+      dueMinute
+    );
+
+    const dueDate = new Date(isoDueDate);
+    const now = new Date();
+
+    // Validate combined datetime
+    if (isNaN(dueDate.getTime()) || dueDate < now) {
+      newErrors.due_date = "Enter a valid future due date and time";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -51,7 +72,7 @@ export default function NewTask() {
       return;
     }
 
-    setErrors({});
+    setErrors({}); // clear errors
 
     try {
       const response = await fetch("http://localhost:8000/api/tasks", {
@@ -62,15 +83,14 @@ export default function NewTask() {
         body: JSON.stringify({
           title,
           description,
-          status: status,
-          due_date: dueDate!.toISOString(), // ISO format for FastAPI
+          status,
+          due_date: isoDueDate, // send ISO string to FastAPI
         }),
       });
 
       if (!response.ok) {
         const data = await response.json();
 
-        // FastAPI validation errors come as an array
         if (Array.isArray(data.detail)) {
           const backendErrors: Record<string, string> = {};
           data.detail.forEach((err: any) => {
@@ -78,15 +98,17 @@ export default function NewTask() {
             backendErrors[field] = err.msg;
           });
           setErrors(backendErrors);
-        } else setErrors({ general: data.detail || "Failed to create task" });
+        } else {
+          setErrors({ general: data.detail || "Failed to create task" });
+        }
         return;
       }
 
-      // Task created successfully — redirect to task list
+      // Redirect on success
       navigate("/tasks");
     } catch (err) {
-      setErrors(errors);
       console.error(err);
+      setErrors({ general: "Something went wrong. Please try again." });
     }
   };
 
@@ -99,8 +121,8 @@ export default function NewTask() {
             <ErrorSummary errors={errors} />
             <h1 className="govuk-heading-l">Create a new task</h1>
 
-            {/* title field */}
             <form onSubmit={handleSubmit} className="govuk-form-group">
+              {/* Title */}
               <div
                 className={`govuk-form-group ${
                   errors.title ? "govuk-form-group--error" : ""
@@ -125,7 +147,7 @@ export default function NewTask() {
                 />
               </div>
 
-              {/* description field */}
+              {/* Description */}
               <div className="govuk-form-group">
                 <label className="govuk-label" htmlFor="description">
                   Description (optional)
@@ -139,13 +161,12 @@ export default function NewTask() {
                 ></textarea>
               </div>
 
-              {/* status radios */}
+              {/* Status */}
               <fieldset
                 className="govuk-fieldset"
                 style={{ marginBottom: "20px" }}
               >
                 <legend className="govuk-fieldset__legend">Status</legend>
-
                 <div className="govuk-radios">
                   {statusOptions.map(({ label, value }) => (
                     <div className="govuk-radios__item" key={value}>
@@ -169,7 +190,7 @@ export default function NewTask() {
                 </div>
               </fieldset>
 
-              {/* due date fieldset */}
+              {/* Due date */}
               <div
                 className={`govuk-form-group ${
                   errors.due_date ? "govuk-form-group--error" : ""
@@ -190,13 +211,9 @@ export default function NewTask() {
                   <div id="due-date-hint" className="govuk-hint">
                     For example, 31 08 2025
                   </div>
-
                   <div className="govuk-date-input" id="due-date">
                     <div className="govuk-date-input__item">
-                      <label
-                        className="govuk-label govuk-date-input__label"
-                        htmlFor="day"
-                      >
+                      <label className="govuk-label" htmlFor="day">
                         Day
                       </label>
                       <input
@@ -211,10 +228,7 @@ export default function NewTask() {
                       />
                     </div>
                     <div className="govuk-date-input__item">
-                      <label
-                        className="govuk-label govuk-date-input__label"
-                        htmlFor="month"
-                      >
+                      <label className="govuk-label" htmlFor="month">
                         Month
                       </label>
                       <input
@@ -229,10 +243,7 @@ export default function NewTask() {
                       />
                     </div>
                     <div className="govuk-date-input__item">
-                      <label
-                        className="govuk-label govuk-date-input__label"
-                        htmlFor="year"
-                      >
+                      <label className="govuk-label" htmlFor="year">
                         Year
                       </label>
                       <input
@@ -244,6 +255,62 @@ export default function NewTask() {
                         inputMode="numeric"
                         value={dueYear}
                         onChange={(e) => setDueYear(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+
+              {/* Due time */}
+              <div
+                className={`govuk-form-group ${
+                  errors.due_time ? "govuk-form-group--error" : ""
+                }`}
+              >
+                <fieldset
+                  className="govuk-fieldset"
+                  role="group"
+                  aria-describedby="due-time-hint"
+                >
+                  <legend className="govuk-fieldset__legend">Due time</legend>
+                  {errors.due_time && (
+                    <p id="due-time-error" className="govuk-error-message">
+                      <span className="govuk-visually-hidden">Error:</span>{" "}
+                      {errors.due_time}
+                    </p>
+                  )}
+                  <div id="due-time-hint" className="govuk-hint">
+                    Use 24-hour format, for example, 14 30
+                  </div>
+                  <div className="govuk-date-input" id="due-time">
+                    <div className="govuk-date-input__item">
+                      <label className="govuk-label" htmlFor="hour">
+                        Hour
+                      </label>
+                      <input
+                        className="govuk-input govuk-date-input__input govuk-input--width-2"
+                        id="hour"
+                        name="hour"
+                        type="text"
+                        pattern="[0-9]*"
+                        inputMode="numeric"
+                        value={dueHour}
+                        onChange={(e) => setDueHour(e.target.value)}
+                      />
+                    </div>
+                    <div className="govuk-date-input__item">
+                      <label className="govuk-label" htmlFor="minute">
+                        Minute
+                      </label>
+                      <input
+                        className="govuk-input govuk-date-input__input govuk-input--width-2"
+                        id="minute"
+                        name="minute"
+                        type="text"
+                        pattern="[0-9]*"
+                        inputMode="numeric"
+                        value={dueMinute}
+                        onChange={(e) => setDueMinute(e.target.value)}
                       />
                     </div>
                   </div>
