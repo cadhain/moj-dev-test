@@ -211,12 +211,18 @@ const EditTaskPage: React.FC = () => {
               />
             </div>
           </div>
-          <button type="submit" className="govuk-button">
-            Save changes
-          </button>
-          <Link to="/tasks" className="govuk-link govuk-!-margin-left-3">
-            Cancel
-          </Link>
+          <div className="govuk-button-group">
+            <button
+              type="submit"
+              className="govuk-button"
+              data-module="govuk-button"
+            >
+              Save changes
+            </button>
+            <a className="govuk-link" href="/tasks">
+              Cancel
+            </a>
+          </div>
         </form>
       </main>
     </div>
