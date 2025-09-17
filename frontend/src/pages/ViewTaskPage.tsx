@@ -116,8 +116,23 @@ export default function ViewTaskPage() {
               readOnly
             />
           </div>
-          <Link to="/tasks" className="govuk-button govuk-button--secondary">
+          <Link
+            to="/tasks"
+            className="govuk-button govuk-button--secondary govuk-!-margin-right-3"
+          >
             Back to tasks
+          </Link>
+          <Link
+            to={`/tasks/${task.id}/edit`}
+            className="govuk-button govuk-button--secondary govuk-!-margin-right-3"
+          >
+            Edit
+          </Link>
+          <Link
+            to={`/tasks/${task.id}/delete`}
+            className="govuk-button govuk-button--warning"
+          >
+            Delete
           </Link>
         </form>
       </main>
