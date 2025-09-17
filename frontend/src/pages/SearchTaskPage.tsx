@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
+import ViewTaskPage from "./ViewTaskPage";
 
 export default function SearchTaskPage() {
   const [taskId, setTaskId] = useState("");
@@ -13,6 +13,7 @@ export default function SearchTaskPage() {
     setError(null);
     setTask(null);
     setLoading(true);
+
     try {
       const response = await fetch(`http://localhost:8000/api/tasks/${taskId}`);
       if (!response.ok) throw new Error("Task not found");
@@ -30,6 +31,8 @@ export default function SearchTaskPage() {
       <Breadcrumbs />
       <main className="govuk-main-wrapper" id="main-content">
         <h1 className="govuk-heading-l">Search for a task by ID</h1>
+
+        {/* Search form */}
         <form onSubmit={handleSearch}>
           <div className="govuk-form-group">
             <label className="govuk-label" htmlFor="taskId">
@@ -49,44 +52,13 @@ export default function SearchTaskPage() {
             Search
           </button>
         </form>
+
+        {/* Feedback */}
         {loading && <p className="govuk-body">Loading...</p>}
         {error && <p className="govuk-error-message">{error}</p>}
-        {task && (
-          <div
-            className="govuk-panel govuk-panel--confirmation"
-            style={{ marginTop: "2em" }}
-          >
-            <h2 className="govuk-heading-m">Task found</h2>
-            <p>
-              <strong>ID:</strong> {task.id}
-            </p>
-            <p>
-              <strong>Title:</strong> {task.title}
-            </p>
-            <p>
-              <strong>Description:</strong> {task.description}
-            </p>
-            <p>
-              <strong>Status:</strong> {task.status}
-            </p>
-            <p>
-              <strong>Due date:</strong>{" "}
-              {new Date(task.due_date).toLocaleString("en-GB")}
-            </p>
-            <Link
-              to={`/tasks/${task.id}/edit`}
-              className="govuk-link govuk-!-margin-right-3"
-            >
-              Edit
-            </Link>
-            <Link
-              to={`/tasks/${task.id}/delete`}
-              className="govuk-link govuk-link--destructive"
-            >
-              Delete
-            </Link>
-          </div>
-        )}
+
+        {/* Reuse ViewTaskPage */}
+        {task && <ViewTaskPage task={task} showBreadcrumbs={false} />}
       </main>
     </div>
   );

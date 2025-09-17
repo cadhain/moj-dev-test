@@ -3,33 +3,55 @@ import { useParams, Link } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { formatDateTime } from "../utils/date";
 
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  due_date: string;
+}
+
+interface ViewTaskPageProps {
+  task?: Task; // optional prop
+  showBreadcrumbs?: boolean; // controls breadcrumbs display
+}
+
 const statusLabels: Record<string, string> = {
   todo: "To do",
   in_progress: "In progress",
   done: "Done",
 };
 
-export default function ViewTaskPage() {
+export default function ViewTaskPage({
+  task: taskProp,
+  showBreadcrumbs = true,
+}: ViewTaskPageProps) {
   const { id } = useParams<{ id: string }>();
-  const [task, setTask] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [task, setTask] = useState<Task | null>(taskProp || null);
+  const [loading, setLoading] = useState(!taskProp); // only load if no prop
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTask() {
-      try {
-        const response = await fetch(`http://localhost:8000/api/tasks/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch task");
-        const data = await response.json();
-        setTask(data);
-      } catch (err) {
-        setError("Could not load task details.");
-      } finally {
-        setLoading(false);
-      }
+    // If no task prop provided, fetch from API using ID
+    if (!task && id) {
+      const fetchTask = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const response = await fetch(`http://localhost:8000/api/tasks/${id}`);
+          if (!response.ok) throw new Error("Task not found");
+          const data = await response.json();
+          setTask(data);
+        } catch (err) {
+          setError("Task not found.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchTask();
     }
-    fetchTask();
-  }, [id]);
+  }, [id, task]);
 
   if (loading) {
     return (
@@ -44,7 +66,7 @@ export default function ViewTaskPage() {
   if (error || !task) {
     return (
       <div className="govuk-width-container">
-        <Breadcrumbs />
+        {showBreadcrumbs && <Breadcrumbs />}
         <main className="govuk-main-wrapper" id="main-content">
           <p className="govuk-error-message">{error || "Task not found."}</p>
         </main>
@@ -56,7 +78,7 @@ export default function ViewTaskPage() {
 
   return (
     <div className="govuk-width-container">
-      <Breadcrumbs />
+      {showBreadcrumbs && <Breadcrumbs />}
       <main className="govuk-main-wrapper" id="main-content">
         <h1 className="govuk-heading-l">View Task</h1>
         <form>
