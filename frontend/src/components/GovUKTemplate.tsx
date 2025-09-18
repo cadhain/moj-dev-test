@@ -7,10 +7,7 @@ export default function GovUKTemplate({
     <>
       {/* header */}
       <header className="govuk-header" data-module="govuk-header">
-        <div
-          className="govuk-header__container govuk-width-container"
-          govuk-header-content-flex
-        >
+        <div className="govuk-header__container govuk-width-container">
           <div className="govuk-header__logo">
             <a
               href="/"
