@@ -29,22 +29,29 @@ export default function NewTask() {
 
     const newErrors: Record<string, string> = {};
 
-    // Validate title
+    // Title validation
     if (!title.trim()) {
       newErrors.title = "Enter a task title";
+    } else if (title.length > 60) {
+      newErrors.title = "Task title must be 60 characters or fewer";
     }
 
-    // Validate due date parts
+    // Description validation
+    if (description.length > 2000) {
+      newErrors.description = "Description must be 2000 characters or fewer";
+    }
+
+    // Date validation
     if (!dueDay || !dueMonth || !dueYear) {
       newErrors.due_date = "Enter a due date";
     }
 
-    // Validate due time parts
+    // Time validation
     if (!dueHour || !dueMinute) {
       newErrors.due_time = "Enter a due time";
     }
 
-    // If required fields missing → skip ISO build
+    // If required fields missing, skip ISO build
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -137,28 +144,67 @@ export default function NewTask() {
                     {errors.title}
                   </p>
                 )}
-                <input
-                  className="govuk-input"
-                  id="title"
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  aria-describedby={errors.title ? "title-error" : undefined}
-                />
+                <div
+                  className="govuk-character-count"
+                  data-module="govuk-character-count"
+                  data-maxlength="60"
+                >
+                  <input
+                    className="govuk-input govuk-js-character-count"
+                    id="title"
+                    name="title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    aria-describedby={`title-info ${
+                      errors.title ? "title-error" : ""
+                    }`}
+                  />
+                  <div
+                    id="title-info"
+                    className="govuk-hint govuk-character-count__message"
+                  >
+                    You can enter up to 60 characters
+                  </div>
+                </div>
               </div>
 
               {/* Description */}
-              <div className="govuk-form-group">
+              <div
+                className={`govuk-form-group ${
+                  errors.description ? "govuk-form-group--error" : ""
+                }`}
+              >
                 <label className="govuk-label" htmlFor="description">
                   Description (optional)
                 </label>
-                <textarea
-                  className="govuk-textarea"
-                  id="description"
-                  rows={5}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
+                {errors.description && (
+                  <p id="description-error" className="govuk-error-message">
+                    <span className="govuk-visually-hidden">Error:</span>{" "}
+                    {errors.description}
+                  </p>
+                )}
+                <div
+                  className="govuk-character-count"
+                  data-module="govuk-character-count"
+                  data-maxlength="2000"
+                >
+                  <textarea
+                    className="govuk-textarea govuk-js-character-count"
+                    id="description"
+                    name="description"
+                    rows={5}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    aria-describedby="description-info"
+                  ></textarea>
+                  <div
+                    id="description-info"
+                    className="govuk-hint govuk-character-count__message"
+                  >
+                    You can enter up to 2000 characters
+                  </div>
+                </div>
               </div>
 
               {/* Status */}
@@ -317,13 +363,15 @@ export default function NewTask() {
                 </fieldset>
               </div>
 
-              <button
-                type="submit"
-                className="govuk-button"
-                style={{ marginTop: "20px" }}
-              >
-                Create task
-              </button>
+              {/* buttons */}
+              <div className="govuk-button-group">
+                <button type="submit" className="govuk-button">
+                  Create task
+                </button>
+                <a className="govuk-link" href="/tasks">
+                  Cancel
+                </a>
+              </div>
             </form>
           </div>
         </div>
