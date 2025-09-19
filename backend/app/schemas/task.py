@@ -4,8 +4,8 @@ from datetime import datetime
 
 
 class TaskCreate(BaseModel):
-    title: str = Field(..., min_length=1, max_length=100)
-    description: Optional[str] = Field(None, max_length=500)  # optional
+    title: str = Field(..., min_length=1, max_length=60)
+    description: Optional[str] = Field(None, max_length=2000)
     due_date: datetime
     status: Literal["todo", "in_progress", "done"] = "todo"
 
