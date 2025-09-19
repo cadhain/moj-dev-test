@@ -51,3 +51,8 @@ A lightweight task management API built with [FastAPI](https://fastapi.tiangolo.
 
    - navigate to either the frontend or backend folder
    - ctrl + c to shutdown
+
+## Sawgger UI
+
+- 127.0.0.1:8000/docs or
+- localhost:8000/docs
