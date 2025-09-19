@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { buildIsoDateTime } from "../utils/date";
 
 const statusOptions = [
   { label: "To do", value: "todo" },
@@ -52,13 +53,13 @@ const EditTaskPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const dueDateISO = `${dueYear}-${dueMonth.padStart(
-      2,
-      "0"
-    )}-${dueDay.padStart(2, "0")}T${dueHour.padStart(
-      2,
-      "0"
-    )}:${dueMinute.padStart(2, "0")}:00Z`;
+    const isoDueDate = buildIsoDateTime(
+      dueYear,
+      dueMonth,
+      dueDay,
+      dueHour,
+      dueMinute
+    );
 
     try {
       const response = await fetch(`http://localhost:8000/api/tasks/${id}`, {
@@ -67,7 +68,7 @@ const EditTaskPage: React.FC = () => {
         body: JSON.stringify({
           title,
           description,
-          due_date: dueDateISO,
+          due_date: isoDueDate,
           status,
         }),
       });
@@ -90,6 +91,7 @@ const EditTaskPage: React.FC = () => {
       <main className="govuk-main-wrapper" id="main-content">
         <h1 className="govuk-heading-l">Edit Task</h1>
         <form onSubmit={handleSubmit}>
+          {/* Title */}
           <div className="govuk-form-group">
             <label className="govuk-label" htmlFor="title">
               Task title
@@ -97,13 +99,14 @@ const EditTaskPage: React.FC = () => {
             <input
               className="govuk-input"
               id="title"
-              name="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
             />
           </div>
+
+          {/* Description */}
           <div className="govuk-form-group">
             <label className="govuk-label" htmlFor="description">
               Description
@@ -111,12 +114,13 @@ const EditTaskPage: React.FC = () => {
             <textarea
               className="govuk-textarea"
               id="description"
-              name="description"
               rows={5}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
+
+          {/* Status */}
           <div className="govuk-form-group">
             <label className="govuk-label" htmlFor="status">
               Status
@@ -124,7 +128,6 @@ const EditTaskPage: React.FC = () => {
             <select
               className="govuk-select"
               id="status"
-              name="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             >
@@ -135,88 +138,102 @@ const EditTaskPage: React.FC = () => {
               ))}
             </select>
           </div>
+
+          {/* Due date */}
           <div className="govuk-form-group">
-            <label className="govuk-label">Due date and time</label>
-            <div
-              style={{ display: "flex", gap: "0.5em", alignItems: "center" }}
+            <fieldset
+              className="govuk-fieldset"
+              role="group"
+              aria-describedby="due-date-hint"
             >
-              <input
-                className="govuk-input"
-                style={{ width: "4em" }}
-                id="due_day"
-                name="due_day"
-                type="number"
-                min="1"
-                max="31"
-                placeholder="DD"
-                value={dueDay}
-                onChange={(e) => setDueDay(e.target.value)}
-                required
-              />
-              /
-              <input
-                className="govuk-input"
-                style={{ width: "4em" }}
-                id="due_month"
-                name="due_month"
-                type="number"
-                min="1"
-                max="12"
-                placeholder="MM"
-                value={dueMonth}
-                onChange={(e) => setDueMonth(e.target.value)}
-                required
-              />
-              /
-              <input
-                className="govuk-input"
-                style={{ width: "6em" }}
-                id="due_year"
-                name="due_year"
-                type="number"
-                min="1900"
-                max="2100"
-                placeholder="YYYY"
-                value={dueYear}
-                onChange={(e) => setDueYear(e.target.value)}
-                required
-              />
-              &nbsp;at&nbsp;
-              <input
-                className="govuk-input"
-                style={{ width: "4em" }}
-                id="due_hour"
-                name="due_hour"
-                type="number"
-                min="0"
-                max="23"
-                placeholder="HH"
-                value={dueHour}
-                onChange={(e) => setDueHour(e.target.value)}
-                required
-              />
-              :
-              <input
-                className="govuk-input"
-                style={{ width: "4em" }}
-                id="due_minute"
-                name="due_minute"
-                type="number"
-                min="0"
-                max="59"
-                placeholder="MM"
-                value={dueMinute}
-                onChange={(e) => setDueMinute(e.target.value)}
-                required
-              />
-            </div>
+              <legend className="govuk-fieldset__legend">Due date</legend>
+              <div id="due-date-hint" className="govuk-hint">
+                For example, 31 08 2025
+              </div>
+              <div className="govuk-date-input" id="due-date">
+                <div className="govuk-date-input__item">
+                  <label className="govuk-label" htmlFor="day">
+                    Day
+                  </label>
+                  <input
+                    className="govuk-input govuk-date-input__input govuk-input--width-2"
+                    id="day"
+                    type="text"
+                    value={dueDay}
+                    onChange={(e) => setDueDay(e.target.value)}
+                  />
+                </div>
+                <div className="govuk-date-input__item">
+                  <label className="govuk-label" htmlFor="month">
+                    Month
+                  </label>
+                  <input
+                    className="govuk-input govuk-date-input__input govuk-input--width-2"
+                    id="month"
+                    type="text"
+                    value={dueMonth}
+                    onChange={(e) => setDueMonth(e.target.value)}
+                  />
+                </div>
+                <div className="govuk-date-input__item">
+                  <label className="govuk-label" htmlFor="year">
+                    Year
+                  </label>
+                  <input
+                    className="govuk-input govuk-date-input__input govuk-input--width-4"
+                    id="year"
+                    type="text"
+                    value={dueYear}
+                    onChange={(e) => setDueYear(e.target.value)}
+                  />
+                </div>
+              </div>
+            </fieldset>
           </div>
-          <div className="govuk-button-group">
-            <button
-              type="submit"
-              className="govuk-button"
-              data-module="govuk-button"
+
+          {/* Due time */}
+          <div className="govuk-form-group">
+            <fieldset
+              className="govuk-fieldset"
+              role="group"
+              aria-describedby="due-time-hint"
             >
+              <legend className="govuk-fieldset__legend">Due time</legend>
+              <div id="due-time-hint" className="govuk-hint">
+                Use 24-hour format, for example, 14 30
+              </div>
+              <div className="govuk-date-input" id="due-time">
+                <div className="govuk-date-input__item">
+                  <label className="govuk-label" htmlFor="hour">
+                    Hour
+                  </label>
+                  <input
+                    className="govuk-input govuk-date-input__input govuk-input--width-2"
+                    id="hour"
+                    type="text"
+                    value={dueHour}
+                    onChange={(e) => setDueHour(e.target.value)}
+                  />
+                </div>
+                <div className="govuk-date-input__item">
+                  <label className="govuk-label" htmlFor="minute">
+                    Minute
+                  </label>
+                  <input
+                    className="govuk-input govuk-date-input__input govuk-input--width-2"
+                    id="minute"
+                    type="text"
+                    value={dueMinute}
+                    onChange={(e) => setDueMinute(e.target.value)}
+                  />
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          {/* Buttons */}
+          <div className="govuk-button-group">
+            <button type="submit" className="govuk-button">
               Save changes
             </button>
             <a className="govuk-link" href="/tasks">
