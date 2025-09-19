@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ErrorSummary from "../components/ErrorSummary";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -96,13 +96,22 @@ export default function NewTask() {
     }
   };
 
+  const errorSummaryRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0 && errorSummaryRef.current) {
+      errorSummaryRef.current.focus(); // focus on the error summary
+      window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top
+    }
+  }, [errors]);
+
   return (
     <div className="govuk-width-container">
       <Breadcrumbs />
       <main className="govuk-main-wrapper " id="main-content" role="main">
         <div className="govuk-grid-row">
           <div className="govuk-grid-column-two-thirds">
-            <ErrorSummary errors={errors} />
+            <ErrorSummary ref={errorSummaryRef} errors={errors} />
             <h1 className="govuk-heading-l">Create a new task</h1>
 
             <form onSubmit={handleSubmit} className="govuk-form-group">
