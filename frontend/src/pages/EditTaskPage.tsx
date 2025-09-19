@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { buildIsoDateTime } from "../utils/date";
 import ErrorSummary from "../components/ErrorSummary";
+import { validateTask } from "../utils/validation";
 
 const statusOptions = [
   { label: "To do", value: "todo" },
@@ -61,26 +62,26 @@ const EditTaskPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Task title validation
-    const newErrors: Record<string, string> = {};
-
-    if (!title.trim()) {
-      newErrors.title = "Enter a task title";
-    } else if (title.length > 60) {
-      newErrors.title = "Task title must be 60 characters or fewer";
-    }
-
-    // Description validation
-    if (description.length > 2000) {
-      newErrors.description = "Description must be 2000 characters or fewer";
-    }
+    const newErrors = validateTask({
+      title,
+      description,
+      dueDay,
+      dueMonth,
+      dueYear,
+      dueHour,
+      dueMinute,
+    });
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return; // stop submission if errors
+      const summary = document.querySelector<HTMLElement>(
+        ".govuk-error-summary"
+      );
+      if (summary) summary.focus();
+      return;
     }
 
-    // Build ISO date string
+    // Build ISO string only if valid
     const isoDueDate = buildIsoDateTime(
       dueYear,
       dueMonth,
@@ -88,6 +89,8 @@ const EditTaskPage: React.FC = () => {
       dueHour,
       dueMinute
     );
+
+    setErrors({});
 
     try {
       const response = await fetch(`http://localhost:8000/api/tasks/${id}`, {

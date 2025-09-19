@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorSummary from "../components/ErrorSummary";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { buildIsoDateTime } from "../utils/date";
+import { validateTask } from "../utils/validation";
 
 type Status = "todo" | "in_progress" | "done";
 
@@ -27,37 +28,26 @@ export default function NewTask() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newErrors: Record<string, string> = {};
+    const newErrors = validateTask({
+      title,
+      description,
+      dueDay,
+      dueMonth,
+      dueYear,
+      dueHour,
+      dueMinute,
+    });
 
-    // Title validation
-    if (!title.trim()) {
-      newErrors.title = "Enter a task title";
-    } else if (title.length > 60) {
-      newErrors.title = "Task title must be 60 characters or fewer";
-    }
-
-    // Description validation
-    if (description.length > 2000) {
-      newErrors.description = "Description must be 2000 characters or fewer";
-    }
-
-    // Date validation
-    if (!dueDay || !dueMonth || !dueYear) {
-      newErrors.due_date = "Enter a due date";
-    }
-
-    // Time validation
-    if (!dueHour || !dueMinute) {
-      newErrors.due_time = "Enter a due time";
-    }
-
-    // If required fields missing, skip ISO build
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      const summary = document.querySelector<HTMLElement>(
+        ".govuk-error-summary"
+      );
+      if (summary) summary.focus();
       return;
     }
 
-    // Build ISO datetime string
+    // Build ISO string only if valid
     const isoDueDate = buildIsoDateTime(
       dueYear,
       dueMonth,
@@ -66,20 +56,7 @@ export default function NewTask() {
       dueMinute
     );
 
-    const dueDate = new Date(isoDueDate);
-    const now = new Date();
-
-    // Validate combined datetime
-    if (isNaN(dueDate.getTime()) || dueDate < now) {
-      newErrors.due_date = "Enter a valid future due date and time";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    setErrors({}); // clear errors
+    setErrors({});
 
     try {
       const response = await fetch("http://localhost:8000/api/tasks", {
