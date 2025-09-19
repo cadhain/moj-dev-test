@@ -80,83 +80,87 @@ export default function ViewTaskPage({
     <div className="govuk-width-container">
       {showBreadcrumbs && <Breadcrumbs />}
       <main className="govuk-main-wrapper" id="main-content">
-        <h1 className="govuk-heading-l">View Task</h1>
-        <form>
-          <div className="govuk-form-group">
-            <label className="govuk-label" htmlFor="title">
-              Task title
-            </label>
-            <input
-              className="govuk-input"
-              id="title"
-              name="title"
-              type="text"
-              value={task.title}
-              disabled
-              readOnly
-            />
+        <div className="govuk-grid-row">
+          <div className="govuk-grid-column-two-thirds">
+            <h1 className="govuk-heading-l">View Task</h1>
+            <form>
+              <div className="govuk-form-group">
+                <label className="govuk-label" htmlFor="title">
+                  Task title
+                </label>
+                <input
+                  className="govuk-input"
+                  id="title"
+                  name="title"
+                  type="text"
+                  value={task.title}
+                  disabled
+                  readOnly
+                />
+              </div>
+              <div className="govuk-form-group">
+                <label className="govuk-label" htmlFor="description">
+                  Description
+                </label>
+                <textarea
+                  className="govuk-textarea"
+                  id="description"
+                  name="description"
+                  rows={5}
+                  value={task.description || ""}
+                  disabled
+                  readOnly
+                ></textarea>
+              </div>
+              <div className="govuk-form-group">
+                <label className="govuk-label" htmlFor="status">
+                  Status
+                </label>
+                <input
+                  className="govuk-input"
+                  id="status"
+                  name="status"
+                  type="text"
+                  value={statusLabels[task.status] || task.status}
+                  disabled
+                  readOnly
+                />
+              </div>
+              <div className="govuk-form-group">
+                <label className="govuk-label" htmlFor="due_date">
+                  Due date
+                </label>
+                <input
+                  className="govuk-input"
+                  id="due_date"
+                  name="due_date"
+                  type="text"
+                  value={formattedDue}
+                  disabled
+                  readOnly
+                />
+              </div>
+              <Link
+                to="/tasks"
+                className="govuk-button govuk-button--secondary govuk-!-margin-right-3"
+              >
+                Back to tasks
+              </Link>
+              <Link
+                to={`/tasks/${task.id}/edit`}
+                className="govuk-button govuk-button--secondary govuk-!-margin-right-3"
+              >
+                Edit
+              </Link>
+              <Link
+                to={`/tasks/${task.id}/delete`}
+                className="govuk-button govuk-button--warning"
+              >
+                Delete
+              </Link>
+            </form>
           </div>
-          <div className="govuk-form-group">
-            <label className="govuk-label" htmlFor="description">
-              Description
-            </label>
-            <textarea
-              className="govuk-textarea"
-              id="description"
-              name="description"
-              rows={5}
-              value={task.description || ""}
-              disabled
-              readOnly
-            ></textarea>
-          </div>
-          <div className="govuk-form-group">
-            <label className="govuk-label" htmlFor="status">
-              Status
-            </label>
-            <input
-              className="govuk-input"
-              id="status"
-              name="status"
-              type="text"
-              value={statusLabels[task.status] || task.status}
-              disabled
-              readOnly
-            />
-          </div>
-          <div className="govuk-form-group">
-            <label className="govuk-label" htmlFor="due_date">
-              Due date
-            </label>
-            <input
-              className="govuk-input"
-              id="due_date"
-              name="due_date"
-              type="text"
-              value={formattedDue}
-              disabled
-              readOnly
-            />
-          </div>
-          <Link
-            to="/tasks"
-            className="govuk-button govuk-button--secondary govuk-!-margin-right-3"
-          >
-            Back to tasks
-          </Link>
-          <Link
-            to={`/tasks/${task.id}/edit`}
-            className="govuk-button govuk-button--secondary govuk-!-margin-right-3"
-          >
-            Edit
-          </Link>
-          <Link
-            to={`/tasks/${task.id}/delete`}
-            className="govuk-button govuk-button--warning"
-          >
-            Delete
-          </Link>
-        </form>
+        </div>
       </main>
     </div>
   );
