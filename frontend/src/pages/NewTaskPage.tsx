@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ErrorSummary from "../components/ErrorSummary";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { buildIsoDateTime } from "../utils/date";
 import { validateTask } from "../utils/validation";
+import ScrollToTopOnError from "../components/ScrollToTopOnError";
 
 type Status = "todo" | "in_progress" | "done";
 
@@ -98,15 +99,9 @@ export default function NewTask() {
 
   const errorSummaryRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (Object.keys(errors).length > 0 && errorSummaryRef.current) {
-      errorSummaryRef.current.focus(); // focus on the error summary
-      window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to top
-    }
-  }, [errors]);
-
   return (
     <div className="govuk-width-container">
+      <ScrollToTopOnError trigger={errors} />
       <Breadcrumbs />
       <main className="govuk-main-wrapper " id="main-content" role="main">
         <div className="govuk-grid-row">

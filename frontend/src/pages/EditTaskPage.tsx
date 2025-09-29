@@ -4,6 +4,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import { buildIsoDateTime } from "../utils/date";
 import ErrorSummary from "../components/ErrorSummary";
 import { validateTask } from "../utils/validation";
+import ScrollToTopOnError from "../components/ScrollToTopOnError";
 
 const statusOptions = [
   { label: "To do", value: "todo" },
@@ -121,6 +122,7 @@ const EditTaskPage: React.FC = () => {
 
   return (
     <div className="govuk-width-container">
+      <ScrollToTopOnError trigger={errors} />
       <Breadcrumbs />
       <main className="govuk-main-wrapper" id="main-content">
         <div className="govuk-grid-row">

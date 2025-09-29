@@ -9,11 +9,10 @@ export default function StartPage() {
         This application allows you to create, view, edit, and delete tasks.
       </p>
       <p className="govuk-body">
-        To get started, navigate to the tasks page where you can manage your
-        tasks.
+        Click the Start button to begin managing your tasks.
       </p>
       <a href="/tasks" className="govuk-button">
-        Go to Tasks
+        Start
       </a>
     </div>
   );
