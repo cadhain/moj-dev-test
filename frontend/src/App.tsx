@@ -8,10 +8,12 @@ import ConfirmationPage from "./pages/ConfirmationPage";
 import SearchTaskPage from "./pages/SearchTaskPage";
 import StartPage from "./pages/StartPage";
 import ViewTaskPage from "./pages/ViewTaskPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <main>
+      <ScrollToTop />
       <Routes>
         <Route
           path="*"
