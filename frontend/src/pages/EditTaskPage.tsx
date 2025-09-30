@@ -45,11 +45,11 @@ const EditTaskPage: React.FC = () => {
 
         // Parse existing date/time
         const date = new Date(data.due_date);
-        setDueYear(String(date.getFullYear()));
-        setDueMonth(String(date.getMonth() + 1).padStart(2, "0"));
-        setDueDay(String(date.getDate()).padStart(2, "0"));
-        setDueHour(String(date.getHours()).padStart(2, "0"));
-        setDueMinute(String(date.getMinutes()).padStart(2, "0"));
+        setDueYear(String(date.getUTCFullYear()));
+        setDueMonth(String(date.getUTCMonth() + 1).padStart(2, "0"));
+        setDueDay(String(date.getUTCDate()).padStart(2, "0"));
+        setDueHour(String(date.getUTCHours()).padStart(2, "0"));
+        setDueMinute(String(date.getUTCMinutes()).padStart(2, "0"));
       } catch (err: any) {
         setError(err.message || "Error loading task");
       } finally {
