@@ -87,6 +87,7 @@ A lightweight task management app built with [FastAPI](https://fastapi.tiangolo.
 ### Backend (Python/FastAPI)
 
 ```bash
+source venv/bin/activate
 cd backend
 pytest
 ```
